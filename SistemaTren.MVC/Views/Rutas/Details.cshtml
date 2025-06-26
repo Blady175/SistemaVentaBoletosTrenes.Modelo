@@ -1,0 +1,38 @@
+﻿@model SistemaVentaBoletosTrenes.Modelo.Ruta
+
+@{
+    ViewData["Title"] = "Detalles de Ruta";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">@ViewData["Title"]</h4>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Origen:</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Origen)</dd>
+
+                        <dt class="col-sm-4">Destino:</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Destino)</dd>
+
+                        <dt class="col-sm-4">Horario:</dt>
+                        <dd class="col-sm-8">@Model.Horario.ToString("HH:mm")</dd>
+                    </dl>
+
+                    <div class="mt-4">
+                        <a asp-action="Edit" asp-route-id="@Model.RutaID" class="btn btn-primary">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Volver al Listado
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

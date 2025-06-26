@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Turismo Ferroviario Ibarra";
+}
+
+<div class="text-center mb-5">
+    <h1 class="display-4">Bienvenido al Sistema de Venta de Boletos</h1>
+    <p class="lead">Seleccione una ruta para comenzar su compra</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-5 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Ibarra - Salinas</h5>
+                <p class="card-text">Disfrute de un viaje panorámico a través de los paisajes andinos.</p>
+                <a asp-controller="Boletos" asp-action="Create" asp-route-rutaId="1" class="btn btn-primary">Seleccionar Ruta</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5 mb-4">
+        <div class="card h-100">
+            
+            <div class="card-body">
+                <h5 class="card-title">Ibarra - Antonio Ante</h5>
+                <p class="card-text">Recorrido histórico por los paisajes culturales de la región.</p>
+                <a asp-controller="Boletos" asp-action="Create" asp-route-rutaId="2" class="btn btn-primary">Seleccionar Ruta</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <h5>Horarios disponibles:</h5>
+            <ul>
+                <li><strong>Ibarra - Salinas:</strong> 08:00, 12:00, 16:00</li>
+                <li><strong>Ibarra - Antonio Ante:</strong> 09:00, 13:00, 17:00</li>
+            </ul>
+        </div>
+    </div>
+</div>
