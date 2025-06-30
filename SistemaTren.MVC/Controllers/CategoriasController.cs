@@ -46,7 +46,6 @@ namespace SistemaTren.MVC.Controllers
         }
 
         // GET: Categorias/Create
-        [Authorize(Roles = "admins")]
         public IActionResult Create()
         {
             return View();

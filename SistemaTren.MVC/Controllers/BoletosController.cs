@@ -150,48 +150,6 @@ namespace SistemaTren.MVC.Controllers
             return View(boleto);
         }
 
-        //// GET: Boletos/Create
-        //public IActionResult Create()
-        //{
-        //    ViewData["AsientoID"] = new SelectList(_context.Asientos, "AsientoID", "TipoAsiento");
-        //    ViewData["CategoriaID"] = new SelectList(_context.Set<Categoria>(), "CategoriaID", "Nombre");
-        //    ViewData["RutaID"] = new SelectList(_context.Set<Ruta>(), "RutaID", "Destino");
-        //    return View();
-        //}
-
-        //// POST: Boletos/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("BoletoID,Precio,FechaCompra,RutaID,CategoriaID,AsientoID")] Boleto boleto)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var ruta = await _context.Rutas.FindAsync(boleto.RutaID);
-        //        var categoria = await _context.Categorias.FindAsync(boleto.CategoriaID);
-        //        var asiento = await _context.Asientos.FindAsync(boleto.AsientoID);
-
-        //        //uso de factoryBoleto para crear el boleto
-        //        var boletoCreado = _factoryBoleto.CrearBoleto(ruta, categoria, asiento);
-
-        //        //calculamos el precio del boleto con precioService
-        //        boletoCreado.Precio = _precioService.CalcularPrecio(boletoCreado);
-
-        //        //agregamos boleto a la base de datos
-        //        _context.Add(boletoCreado);
-        //        await _context.SaveChangesAsync();
-
-        //        //notificacion al cliente
-        //        //TempData["Mensaje"] = "Boleto Comprado Con Exito";
-        //        _notificacionService.EnviarNotificacion("¡Boleto comprado con éxito!", this);
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["AsientoID"] = new SelectList(_context.Asientos, "AsientoID", "TipoAsiento", boleto.AsientoID);
-        //    ViewData["CategoriaID"] = new SelectList(_context.Set<Categoria>(), "CategoriaID", "Nombre", boleto.CategoriaID);
-        //    ViewData["RutaID"] = new SelectList(_context.Set<Ruta>(), "RutaID", "Destino", boleto.RutaID);
-        //    return View(boleto);
-        //}
 
         // GET: Boletos/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -267,6 +225,7 @@ namespace SistemaTren.MVC.Controllers
             {
                 return NotFound();
             }
+
 
             return View(boleto);
         }

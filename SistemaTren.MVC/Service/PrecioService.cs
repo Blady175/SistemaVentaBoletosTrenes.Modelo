@@ -4,7 +4,7 @@ namespace SistemaTren.MVC.Service
 {
     public class PrecioService
     {
-        // Precio base para un adulto en asiento económico
+        // Precio base para un adulto economico
         private const double PrecioBase = 20.0;
 
         public double CalcularPrecio(Boleto boleto)
@@ -29,7 +29,7 @@ namespace SistemaTren.MVC.Service
             // Aplicar recargo por asiento preferencial
             if (boleto.Asiento?.TipoAsiento?.ToLower() == "preferencial")
             {
-                precioFinal += 5.0; // Recargo por asiento preferencial
+                precioFinal += 5.0; 
             }
 
             return precioFinal;
