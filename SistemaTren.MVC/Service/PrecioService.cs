@@ -1,4 +1,5 @@
 ﻿using SistemaVentaBoletosTrenes.Modelo;
+using System.Globalization;
 
 namespace SistemaTren.MVC.Service
 {
@@ -12,7 +13,7 @@ namespace SistemaTren.MVC.Service
             double precioFinal = PrecioBase;
 
             // Aplicar descuento según categoría
-            switch (boleto.Categoria?.Nombre.ToLower())
+            switch (boleto.Categoria?.Nombre?.ToLowerInvariant())
             {
                 case "niño":
                 case "tercera edad":
@@ -27,7 +28,7 @@ namespace SistemaTren.MVC.Service
             }
 
             // Aplicar recargo por asiento preferencial
-            if (boleto.Asiento?.TipoAsiento?.ToLower() == "preferencial")
+            if (boleto.Asiento?.TipoAsiento?.ToLowerInvariant() == "preferencial")
             {
                 precioFinal += 5.0; 
             }

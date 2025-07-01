@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SistemaTren.MVC.Data;
 using SistemaVentaBoletosTrenes.Modelo;
@@ -24,7 +22,9 @@ namespace SistemaTren.MVC.Controllers
         // GET: Asientos
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Asientos.ToListAsync());
+            return View(await _context.Asientos
+                .OrderBy(a => a.NumeroAsiento)
+                .ToListAsync());
         }
 
         // GET: Asientos/Details/5
@@ -52,16 +52,20 @@ namespace SistemaTren.MVC.Controllers
         }
 
         // POST: Asientos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AsientoID,TipoAsiento")] Asiento asiento)
+        public async Task<IActionResult> Create([Bind("AsientoID,NumeroAsiento,TipoAsiento,Disponible")] Asiento asiento)
         {
+            if (_context.Asientos.Any(a => a.NumeroAsiento == asiento.NumeroAsiento))
+            {
+                ModelState.AddModelError("NumeroAsiento", "Este número de asiento ya existe");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(asiento);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Asiento creado exitosamente.";
                 return RedirectToAction(nameof(Index));
             }
             return View(asiento);
@@ -84,15 +88,18 @@ namespace SistemaTren.MVC.Controllers
         }
 
         // POST: Asientos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AsientoID,TipoAsiento")] Asiento asiento)
+        public async Task<IActionResult> Edit(int id, [Bind("AsientoID,NumeroAsiento,TipoAsiento,Disponible")] Asiento asiento)
         {
             if (id != asiento.AsientoID)
             {
                 return NotFound();
+            }
+
+            if (_context.Asientos.Any(a => a.NumeroAsiento == asiento.NumeroAsiento && a.AsientoID != id))
+            {
+                ModelState.AddModelError("NumeroAsiento", "Este número de asiento ya existe");
             }
 
             if (ModelState.IsValid)
@@ -101,6 +108,7 @@ namespace SistemaTren.MVC.Controllers
                 {
                     _context.Update(asiento);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Asiento actualizado exitosamente.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -127,12 +135,15 @@ namespace SistemaTren.MVC.Controllers
             }
 
             var asiento = await _context.Asientos
+                .Include(a => a.Boletos)
                 .FirstOrDefaultAsync(m => m.AsientoID == id);
+
             if (asiento == null)
             {
                 return NotFound();
             }
 
+            ViewBag.TieneBoletos = asiento.Boletos?.Any() == true;
             return View(asiento);
         }
 
@@ -141,14 +152,41 @@ namespace SistemaTren.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var asiento = await _context.Asientos.FindAsync(id);
-            if (asiento != null)
+            try
             {
-                _context.Asientos.Remove(asiento);
-            }
+                var asiento = await _context.Asientos
+                    .Include(a => a.Boletos)
+                    .FirstOrDefaultAsync(a => a.AsientoID == id);
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                if (asiento == null)
+                {
+                    TempData["ErrorMessage"] = "El asiento no fue encontrado.";
+                    return View("DeleteError");
+                }
+
+                if (asiento.Boletos?.Any() == true)
+                {
+                    TempData["ErrorMessage"] = $"No se puede eliminar el asiento {asiento.NumeroAsiento} porque está asignado a {asiento.Boletos.Count} boleto(s).";
+                    return View("DeleteError");
+                }
+
+                _context.Asientos.Remove(asiento);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Asiento {asiento.NumeroAsiento} eliminado exitosamente.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error inesperado al eliminar el asiento: {ex.Message}";
+                return View("DeleteError");
+            }
+        }
+
+        // GET: Asientos/DeleteError
+        public IActionResult DeleteError()
+        {
+            return View();
         }
 
         private bool AsientoExists(int id)

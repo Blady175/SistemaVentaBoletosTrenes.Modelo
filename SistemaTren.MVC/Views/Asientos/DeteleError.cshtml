@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Error al Eliminar Asiento";
+}
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-danger text-white">
+            <h3><i class="bi bi-exclamation-triangle"></i> Error al Eliminar Asiento</h3>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <h4>@TempData["ErrorMessage"]</h4>
+                <p>Por favor, verifique que el asiento no esté asignado a ningún boleto antes de intentar eliminarlo.</p>
+            </div>
+
+            <div class="mt-4">
+                <a asp-action="Index" class="btn btn-primary">
+                    <i class="bi bi-list-ul"></i> Volver a la lista de asientos
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+}

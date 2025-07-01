@@ -1,13 +1,9 @@
 ﻿@model SistemaVentaBoletosTrenes.Modelo.Boleto
-
 @{
     ViewData["Title"] = "Comprar Boleto";
-    var rutas = ViewBag.Rutas as List<SistemaVentaBoletosTrenes.Modelo.Ruta>;
-    var categorias = ViewBag.Categorias as List<SistemaVentaBoletosTrenes.Modelo.Categoria>;
-    var asientos = ViewBag.Asientos as List<SistemaVentaBoletosTrenes.Modelo.Asiento>;
 }
 
-<div class="container">
+<div class="container mt-4">
     <h1 class="text-center mb-4">@ViewData["Title"]</h1>
 
     @if (TempData["Mensaje"] != null)
@@ -17,28 +13,26 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
- 
+
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-lg-8">
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0">Complete los datos del boleto</h4>
                 </div>
                 <div class="card-body">
-                    <form asp-action="Create" id="boletoForm">
+                    <form asp-action="Create">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                         <!-- Sección de Ruta -->
                         <div class="mb-3">
                             <label class="form-label">Ruta:</label>
-                            <select asp-for="RutaID" class="form-select" id="rutaSelect" required>
+                            <select asp-for="RutaID" class="form-control" required>
                                 <option value="">Seleccione una ruta</option>
-                                @foreach (var ruta in rutas)
+                                @foreach (var ruta in ViewBag.Rutas)
                                 {
                                     <option value="@ruta.RutaID"
-                                            data-origen="@ruta.Origen"
-                                            data-destino="@ruta.Destino"
-                                            data-horario="@ruta.Horario.ToString("HH:mm")">
+                                            selected="@(ViewBag.RutaSeleccionada != null && ViewBag.RutaSeleccionada == ruta.RutaID)">
                                         @ruta.Origen - @ruta.Destino (@ruta.Horario.ToString("HH:mm"))
                                     </option>
                                 }
@@ -46,22 +40,14 @@
                             <span asp-validation-for="RutaID" class="text-danger"></span>
                         </div>
 
-                        <!-- Información de la Ruta Seleccionada -->
-                        <div class="alert alert-info" id="rutaInfo" style="display: none;">
-                            <h5>Detalles de la Ruta:</h5>
-                            <p><strong>Origen:</strong> <span id="origenInfo"></span></p>
-                            <p><strong>Destino:</strong> <span id="destinoInfo"></span></p>
-                            <p><strong>Horario:</strong> <span id="horarioInfo"></span></p>
-                        </div>
-
                         <!-- Sección de Categoría -->
                         <div class="mb-3">
-                            <label class="form-label">Categoría del Pasajero:</label>
-                            <select asp-for="CategoriaID" class="form-select" id="categoriaSelect" required>
+                            <label class="form-label">Categoría:</label>
+                            <select asp-for="CategoriaID" class="form-control" required>
                                 <option value="">Seleccione una categoría</option>
-                                @foreach (var categoria in categorias)
+                                @foreach (var categoria in ViewBag.Categorias)
                                 {
-                                    <option value="@categoria.CategoriaID" data-descuento="@categoria.Descuento">
+                                    <option value="@categoria.CategoriaID">
                                         @categoria.Nombre (Descuento: @(categoria.Descuento * 100)%)
                                     </option>
                                 }
@@ -69,15 +55,15 @@
                             <span asp-validation-for="CategoriaID" class="text-danger"></span>
                         </div>
 
-                        <!-- Sección de Tipo de Asiento -->
+                        <!-- Sección de Asiento -->
                         <div class="mb-3">
-                            <label class="form-label">Tipo de Asiento:</label>
-                            <select asp-for="AsientoID" class="form-select" id="asientoSelect" required>
-                                <option value="">Seleccione un tipo de asiento</option>
-                                @foreach (var asiento in asientos)
+                            <label class="form-label">Asiento:</label>
+                            <select asp-for="AsientoID" class="form-control" required>
+                                <option value="">Seleccione un asiento</option>
+                                @foreach (var asiento in ViewBag.AsientosDisponibles)
                                 {
-                                    <option value="@asiento.AsientoID" data-tipo="@asiento.TipoAsiento">
-                                        @asiento.TipoAsiento
+                                    <option value="@asiento.AsientoID">
+                                        Asiento @asiento.NumeroAsiento - @asiento.TipoAsiento
                                     </option>
                                 }
                             </select>
@@ -85,31 +71,14 @@
                         </div>
 
                         <!-- Sección de Precio -->
-                        <div class="mb-3">
-                            <label class="form-label">Precio Base:</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="number" class="form-control" id="precioBase" value="20" readonly>
-                            </div>
-                            <small class="text-muted">Precio base para adultos en asiento económico</small>
-                        </div>
-
-                        <!-- Resumen de Precio -->
                         <div class="alert alert-success">
                             <h5>Resumen de Precio:</h5>
-                            <p><strong>Precio Base:</strong> $<span id="precioBaseDisplay">20.00</span></p>
-                            <p><strong>Descuento:</strong> <span id="descuentoDisplay">0%</span></p>
-                            <p><strong>Recargo por Asiento:</strong> $<span id="recargoAsientoDisplay">0.00</span></p>
-                            <hr>
-                            <h4>Total a Pagar: $<span id="precioFinalDisplay">20.00</span></h4>
+                            <p>El precio final se calculará al confirmar la compra</p>
                         </div>
 
-                        <input type="hidden" asp-for="Precio" id="precioFinal" />
-                        <input type="hidden" asp-for="FechaCompra" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss")" />
-
-                        <div class="d-grid gap-2">
+                        <div class="d-grid gap-2 mt-4">
                             <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-ticket-perforated"></i> Comprar Boleto
+                                Comprar Boleto
                             </button>
                         </div>
                     </form>
@@ -123,77 +92,4 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
-    <script>
-        $(document).ready(function() {
-            // Variables para cálculos
-            const precioBase = 20;
-            let descuento = 0;
-            let recargoAsiento = 0;
-
-            // Mostrar información de la ruta seleccionada
-            $('#rutaSelect').change(function() {
-                const selectedOption = $(this).find('option:selected');
-                const origen = selectedOption.data('origen');
-                const destino = selectedOption.data('destino');
-                const horario = selectedOption.data('horario');
-
-                if (origen && destino && horario) {
-                    $('#origenInfo').text(origen);
-                    $('#destinoInfo').text(destino);
-                    $('#horarioInfo').text(horario);
-                    $('#rutaInfo').show();
-                } else {
-                    $('#rutaInfo').hide();
-                }
-
-                calcularPrecioFinal();
-            });
-
-            // Calcular descuento según categoría
-            $('#categoriaSelect').change(function() {
-                const selectedOption = $(this).find('option:selected');
-                descuento = parseFloat(selectedOption.data('descuento')) || 0;
-
-                $('#descuentoDisplay').text((descuento * 100) + '%');
-                calcularPrecioFinal();
-            });
-
-            // Calcular recargo por tipo de asiento
-            $('#asientoSelect').change(function() {
-                const selectedOption = $(this).find('option:selected');
-                const tipoAsiento = selectedOption.data('tipo');
-
-                // Asiento preferencial tiene recargo de $5
-                recargoAsiento = tipoAsiento === 'Preferencial' ? 5 : 0;
-                $('#recargoAsientoDisplay').text(recargoAsiento.toFixed(2));
-
-                calcularPrecioFinal();
-            });
-
-            // Función para calcular el precio final
-            function calcularPrecioFinal() {
-                let precio = precioBase;
-
-                // Aplicar descuento según categoría
-                precio = precio * (1 - descuento);
-
-                // Aplicar recargo por asiento preferencial
-                precio += recargoAsiento;
-
-                // Actualizar displays
-                $('#precioBaseDisplay').text(precioBase.toFixed(2));
-                $('#precioFinalDisplay').text(precio.toFixed(2));
-                $('#precioFinal').val(precio);
-            }
-
-            // Si viene con ruta preseleccionada
-        @if (Context.Request.Query.ContainsKey("rutaId"))
-        {
-            <text>
-                    $('#rutaSelect').val('@Context.Request.Query["rutaId"]').trigger('change');
-            </text>
-        }
-        });
-    </script>
 }

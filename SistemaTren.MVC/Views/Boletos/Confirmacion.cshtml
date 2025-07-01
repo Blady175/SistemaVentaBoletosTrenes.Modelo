@@ -41,6 +41,10 @@
                                 <li class="list-group-item">
                                     <strong>Tipo de Asiento:</strong> @Model.Asiento.TipoAsiento
                                 </li>
+                                <!-- Agregado el Número de Asiento -->
+                                <li class="list-group-item">
+                                    <strong>Número de Asiento:</strong> @Model.Asiento.NumeroAsiento
+                                </li>
                                 <li class="list-group-item">
                                     <strong>Precio Total:</strong> $@Model.Precio.ToString("0.00")
                                 </li>
@@ -61,7 +65,7 @@
                         <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
                             <i class="bi bi-house"></i> Volver al Inicio
                         </a>
-                        
+
                     </div>
                 </div>
                 <div class="card-footer text-muted text-center">

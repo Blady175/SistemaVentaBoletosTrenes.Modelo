@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Turismo Ferroviario Ibarra</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SistemaTren.MVC.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    
                     Turismo Ferroviario Ibarra
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -35,7 +35,7 @@
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" asp-controller="Rutas" asp-action="Index">Rutas</a></li>
                                 <li><a class="dropdown-item" asp-controller="Categorias" asp-action="Index">Categorías</a></li>
-                                <li><a class="dropdown-item" asp-controller="Asientos" asp-action="Index">Tipos de Asiento</a></li>
+                                <li><a class="dropdown-item" asp-controller="Asientos" asp-action="Index">Asientos</a></li>
                                 <li><a class="dropdown-item" asp-controller="Clientes" asp-action="Index">Clientes</a></li>
                                 <li><a class="dropdown-item" asp-controller="Boletos" asp-action="Index">Boletos Vendidos</a></li>
                             </ul>
@@ -46,17 +46,36 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+
+    <div class="container flex-grow-1">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted bg-light">
-        <div class="container">
-            &copy; 2023 - Turismo Ferroviario Ibarra S.A. - <a asp-area="" asp-controller="Home" asp-action="Privacy">Políticas de Privacidad</a>
-        </div>
-    </footer>
+    @{
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+        var currentTitle = ViewData["Title"]?.ToString();
+
+        // Ocultar footer en:
+        // 1. Acción Create de cualquier controlador
+        // 2. Vistas con título "Confirmación de Compra"
+        // 3. Cualquier vista del controlador Asientos
+        var hideFooter = currentAction == "Create" ||
+        currentTitle == "Confirmación de Compra" ||
+        currentController == "Asientos";
+    }
+
+    @if (!hideFooter)
+    {
+        <footer class="border-top footer text-muted bg-light mt-auto">
+            <div class="container">
+                &copy; 2023 - Turismo Ferroviario Ibarra S.A. - <a asp-area="" asp-controller="Home" asp-action="Privacy">Políticas de Privacidad</a>
+            </div>
+        </footer>
+    }
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

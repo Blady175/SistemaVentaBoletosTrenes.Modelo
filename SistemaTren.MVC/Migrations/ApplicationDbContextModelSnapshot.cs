@@ -232,6 +232,12 @@ namespace SistemaTren.MVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AsientoID"));
 
+                    b.Property<bool>("Disponible")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("NumeroAsiento")
+                        .HasColumnType("int");
+
                     b.Property<string>("TipoAsiento")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -257,6 +263,9 @@ namespace SistemaTren.MVC.Migrations
 
                     b.Property<DateTime>("FechaCompra")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("NumeroAsiento")
+                        .HasColumnType("int");
 
                     b.Property<double>("Precio")
                         .HasColumnType("float");
@@ -419,7 +428,7 @@ namespace SistemaTren.MVC.Migrations
             modelBuilder.Entity("SistemaVentaBoletosTrenes.Modelo.Boleto", b =>
                 {
                     b.HasOne("SistemaVentaBoletosTrenes.Modelo.Asiento", "Asiento")
-                        .WithMany()
+                        .WithMany("Boletos")
                         .HasForeignKey("AsientoID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -452,6 +461,11 @@ namespace SistemaTren.MVC.Migrations
                         .IsRequired();
 
                     b.Navigation("Cliente");
+                });
+
+            modelBuilder.Entity("SistemaVentaBoletosTrenes.Modelo.Asiento", b =>
+                {
+                    b.Navigation("Boletos");
                 });
 
             modelBuilder.Entity("SistemaVentaBoletosTrenes.Modelo.Cliente", b =>

@@ -17,7 +17,9 @@ namespace SistemaTren.MVC.Migrations
                 {
                     AsientoID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TipoAsiento = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    TipoAsiento = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NumeroAsiento = table.Column<int>(type: "int", nullable: false),
+                    Disponible = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -243,7 +245,8 @@ namespace SistemaTren.MVC.Migrations
                     FechaCompra = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RutaID = table.Column<int>(type: "int", nullable: false),
                     CategoriaID = table.Column<int>(type: "int", nullable: false),
-                    AsientoID = table.Column<int>(type: "int", nullable: false)
+                    AsientoID = table.Column<int>(type: "int", nullable: false),
+                    NumeroAsiento = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

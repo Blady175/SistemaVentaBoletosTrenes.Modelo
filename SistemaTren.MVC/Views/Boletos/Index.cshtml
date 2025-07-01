@@ -1,59 +1,66 @@
 ﻿@model IEnumerable<SistemaVentaBoletosTrenes.Modelo.Boleto>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Administración de Boletos Vendidos";
 }
 
-<h1>Boletos Vendidos</h1>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>@ViewData["Title"]</h1>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Registrar Nueva Venta
+        </a>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Precio)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaCompra)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ruta)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Categoria)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Asiento)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Precio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaCompra)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ruta.Destino)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Categoria.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Asiento.TipoAsiento)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.BoletoID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BoletoID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BoletoID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Mensaje"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Precio</th>
+                            <th>Fecha de Compra</th>
+                            <th>Ruta</th>
+                            <th>Categoría</th>
+                            <th>Asiento</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>$@Html.DisplayFor(modelItem => item.Precio)</td>
+                                <td>@item.FechaCompra.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@Html.DisplayFor(modelItem => item.Ruta.Origen) - @Html.DisplayFor(modelItem => item.Ruta.Destino)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Categoria.Nombre)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Asiento.TipoAsiento) (#@Html.DisplayFor(modelItem => item.Asiento.NumeroAsiento))</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Edit" asp-route-id="@item.BoletoID" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.BoletoID" class="btn btn-sm btn-outline-info">
+                                            <i class="bi bi-eye"></i> Detalles
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.BoletoID" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i> Eliminar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

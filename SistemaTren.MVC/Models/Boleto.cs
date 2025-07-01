@@ -17,6 +17,8 @@ namespace SistemaVentaBoletosTrenes.Modelo
         public int CategoriaID { get; set; }  
         public int AsientoID { get; set; }
 
+        public int NumeroAsiento { get; set; }
+
         // Relaciones
         public Ruta? Ruta { get; set; }
         public Categoria? Categoria { get; set; }
